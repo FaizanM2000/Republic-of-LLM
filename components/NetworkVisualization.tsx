@@ -136,7 +136,7 @@ export function NetworkVisualization() {
     }
 
     // Draw edges with data joining
-    let linkGroup = container.select<SVGGElement, unknown>('g.links');
+    let linkGroup = container.select<SVGGElement>('g.links');
     if (linkGroup.empty()) {
       linkGroup = container.append('g').attr('class', 'links');
     }
@@ -155,7 +155,7 @@ export function NetworkVisualization() {
     const linkMerged = linkEnter.merge(link as any);
 
     // Draw nodes with data joining
-    let nodeGroup = container.select<SVGGElement, unknown>('g.nodes');
+    let nodeGroup = container.select<SVGGElement>('g.nodes');
     if (nodeGroup.empty()) {
       nodeGroup = container.append('g').attr('class', 'nodes');
     }
