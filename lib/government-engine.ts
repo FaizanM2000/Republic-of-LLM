@@ -929,21 +929,27 @@ Government Status:
   }
 
   private generateAgentName(parent: Agent, type: AgentType, need: string): string {
-    const prefixes = {
+    const prefixes: Record<AgentType, string> = {
       taskforce: 'Task Force on',
       oversight: 'Oversight Committee for',
       agency: 'Agency for',
-      department: 'Department of'
+      department: 'Department of',
+      committee: 'Committee on',
+      emergency: 'Emergency Response for',
+      executive: 'Executive Office of',
+      legislative: 'Legislative Committee on',
+      judicial: 'Judicial Panel on',
+      coalition: 'Coalition for'
     };
 
-    const subjects = {
+    const subjects: Record<string, string> = {
       'crisis-response': 'Emergency Response',
       'oversight': `${parent.name} Operations`,
       'specialization': 'Advanced Operations',
       'expansion': 'Regional Development'
     };
 
-    return `${prefixes[type]} ${subjects[need]}`;
+    return `${prefixes[type]} ${subjects[need] || 'Special Operations'}`;
   }
 
   private calculateChildPosition(parent: Agent): any {
