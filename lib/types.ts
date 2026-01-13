@@ -198,6 +198,11 @@ export interface NetworkNode {
   type: AgentType;
   x: number;
   y: number;
+  vx?: number;
+  vy?: number;
+  fx?: number | null;
+  fy?: number | null;
+  index?: number;
   size: number;
   color: string;
   influence: number;
