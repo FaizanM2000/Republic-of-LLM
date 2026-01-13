@@ -39,7 +39,7 @@ export interface Personality {
   riskTolerance: number; // 0-1
   innovation: number; // 0-1
   collaboration: number; // 0-1
-  leadershipStyle: 'authoritative' | 'democratic' | 'collaborative' | 'delegative';
+  leadershipStyle: 'authoritative' | 'democratic' | 'collaborative' | 'delegative' | 'diplomatic' | 'analytical' | 'deliberative' | 'methodical' | 'technocratic';
   specializations: string[];
   ideologyLean: number; // -1 (progressive) to 1 (conservative)
   decisionSpeed: number; // 0-1
