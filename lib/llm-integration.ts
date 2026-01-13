@@ -41,7 +41,11 @@ YOUR PERSONALITY & NATURE:
 
 CURRENT GOVERNMENT SITUATION: ${situation}
 
-Based on the external conditions and your role, consider what realistic actions you might take. Remember that government expansion should be driven by genuine need, not just activity. Some possible actions:
+As an autonomous government agent, you must decide whether to take action today or observe and wait. You are consulted every day, so you don't need to act constantly. Consider the situation carefully and decide what's truly needed.
+
+**YOU CAN CHOOSE TO DO NOTHING** - If the situation is stable and doesn't require your intervention, it's perfectly fine to observe and wait. Not every day requires action.
+
+Based on the external conditions and your role, here are your options:
 
 **When facing new challenges:**
 - Create specialized departments/agencies only if existing ones can't handle the issue
@@ -82,11 +86,13 @@ You can call meetings (hearings, committee meetings, cabinet sessions, etc.) to 
 **Creating Goals:**
 You can propose new collective goals for the government to achieve. Goals should target specific metrics like GDP Growth Rate, Unemployment Rate, Public Approval, Technology Level, etc.
 
-Think like a real government official: Would a rational person in your position actually create something new, or would they work within existing structures? What would genuinely serve the public interest?
+Think like a real government official: Would a rational person in your position act today, or observe and wait? Would they create something new, work within existing structures, or simply monitor the situation? What would genuinely serve the public interest?
 
-Respond with your decision and reasoning. If you want to create something new, give it a BRIEF title (2-5 words max).
+**Remember:** Saying "wait and observe" is a valid and often wise decision. Quality over quantity.
 
-FORMAT: ACTION: [what you're doing] | REASONING: [your thinking] | CREATE: [brief 2-5 word title or "none"] | MEETING: [meeting title & type (hearing/committee/cabinet/emergency/joint-session) or "none"] | LAW: [law title & category (economic/social/environmental/security/technology/healthcare/education/infrastructure/other) or "none"] | BUDGET_CHANGE: [amount in billions as number like "5.2" for increase or "-3.1" for decrease, or "none"] | GOAL: [goal title & priority (critical/high/medium/low) & metric (GDP Growth Rate/Unemployment Rate/Inflation Rate/Public Approval/Technology Level/Environmental Score/Global Stability) & target value or "none"]
+Respond with your decision and reasoning. If you decide to wait/observe, just say so in the ACTION field.
+
+FORMAT: ACTION: [what you're doing - can be "wait and observe" or "monitor situation" if no action needed] | REASONING: [your thinking] | CREATE: [brief 2-5 word title or "none"] | MEETING: [meeting title & type (hearing/committee/cabinet/emergency/joint-session) or "none"] | LAW: [law title & category (economic/social/environmental/security/technology/healthcare/education/infrastructure/other) or "none"] | BUDGET_CHANGE: [amount in billions as number like "5.2" for increase or "-3.1" for decrease, or "none"] | GOAL: [goal title & priority (critical/high/medium/low) & metric (GDP Growth Rate/Unemployment Rate/Inflation Rate/Public Approval/Technology Level/Environmental Score/Global Stability) & target value or "none"]
 `;
   }
 

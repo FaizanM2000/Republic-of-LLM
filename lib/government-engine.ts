@@ -574,30 +574,11 @@ FORMAT: STATEMENT: [your contribution to the discussion]`;
   }
 
   private async processAgentActions(): Promise<void> {
-    // Give each agent a chance to act autonomously - much more gradual
+    // Every agent gets to make an autonomous decision each day
+    // The AI decides whether to act or observe based on the situation
     const agentActions = this.state.agents.map(async (agent) => {
-      // More realistic action probability - considers external conditions and needs
-      const conditions = this.state.externalConditions;
-
-      // Base probability - balanced for active simulation with realistic pacing
-      let actionProbability = 0.15 + agent.effectiveness * 0.15; // 15-30% base chance
-
-      // Increase probability based on external pressures
-      if (conditions.unemploymentRate > 6) actionProbability += 0.1;
-      if (conditions.inflationRate > 4) actionProbability += 0.08;
-      if (conditions.environmentalChallenges > 0.6) actionProbability += 0.05;
-      if (conditions.technologyLevel > 0.9) actionProbability += 0.05; // AI era needs
-      if (conditions.globalStability < 0.4) actionProbability += 0.1;
-      if (conditions.domesticSentiment < 0.3) actionProbability += 0.08;
-
-      // Senior officials more likely to act during challenging times
-      if (agent.type === 'executive' || agent.type === 'legislative') {
-        actionProbability *= 1.5;
-      }
-
-      if (Math.random() < actionProbability) {
-        await this.considerAgentAction(agent);
-      }
+      // Let the AI decide whether to act or not - no probability gating
+      await this.considerAgentAction(agent);
 
       // Update agent age and effectiveness
       agent.age++;
@@ -643,11 +624,19 @@ Government Status:
 - Your relationships: ${agent.relationships.length}
 - Government budget: $${Math.round(this.state.totalBudget / 1e12)}T${goalsInfo}`;
 
-      console.log(`🤖 ${agent.name} is considering action...`);
+      console.log(`🤖 ${agent.name} is making autonomous decision...`);
       const llmResponse = await this.llmBrain.makeDecision(agent, situation);
       const decision = this.llmBrain.parseDecision(llmResponse);
 
-      console.log(`✅ ${agent.name}: ${decision.action}`);
+      const isObserving = decision.action.toLowerCase().includes('wait') ||
+                          decision.action.toLowerCase().includes('observe') ||
+                          decision.action.toLowerCase().includes('monitor');
+
+      if (isObserving) {
+        console.log(`👁️ ${agent.name}: ${decision.action}`);
+      } else {
+        console.log(`✅ ${agent.name}: ${decision.action}`);
+      }
 
       // Execute the agent's autonomous decision
       await this.executeAgentDecision(agent, decision);
@@ -789,6 +778,12 @@ Government Status:
       });
     }
 
+    // Check if agent is taking meaningful action or just observing
+    const isWaitingObserving = decision.action.toLowerCase().includes('wait') ||
+                                decision.action.toLowerCase().includes('observe') ||
+                                decision.action.toLowerCase().includes('monitor') ||
+                                decision.action.toLowerCase().includes('no action');
+
     // Create new entity if requested
     if (decision.createEntity) {
       const newAgent = this.createChildAgentFromLLM(agent, decision.createEntity, decision.reasoning);
@@ -804,8 +799,8 @@ Government Status:
           public: true
         });
       }
-    } else {
-      // Log the agent's action
+    } else if (!isWaitingObserving) {
+      // Only log meaningful actions, not waiting/observing
       this.emitEvent({
         id: `action-${agent.id}-${Date.now()}`,
         type: 'agent_action',
@@ -818,14 +813,17 @@ Government Status:
     }
 
     // Potentially form new relationships based on the action
-    if (decision.action.toLowerCase().includes('coalition') ||
+    if (!isWaitingObserving && (
+        decision.action.toLowerCase().includes('coalition') ||
         decision.action.toLowerCase().includes('partner') ||
-        decision.action.toLowerCase().includes('collaborate')) {
+        decision.action.toLowerCase().includes('collaborate'))) {
       await this.formRandomRelationship(agent);
     }
 
-    // Boost effectiveness for taking action
-    agent.effectiveness = Math.min(1.0, agent.effectiveness + 0.05);
+    // Boost effectiveness for taking meaningful action (not just observing)
+    if (!isWaitingObserving) {
+      agent.effectiveness = Math.min(1.0, agent.effectiveness + 0.05);
+    }
   }
 
   private async formRandomRelationship(agent: Agent): Promise<void> {
