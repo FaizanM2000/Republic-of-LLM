@@ -579,20 +579,20 @@ FORMAT: STATEMENT: [your contribution to the discussion]`;
       // More realistic action probability - considers external conditions and needs
       const conditions = this.state.externalConditions;
 
-      // Base probability is lower - government doesn't expand constantly
-      let actionProbability = agent.effectiveness * 0.02; // 0-2% base chance
+      // Base probability - balanced for active simulation with realistic pacing
+      let actionProbability = 0.15 + agent.effectiveness * 0.15; // 15-30% base chance
 
       // Increase probability based on external pressures
-      if (conditions.unemploymentRate > 6) actionProbability += 0.02;
-      if (conditions.inflationRate > 4) actionProbability += 0.015;
-      if (conditions.environmentalChallenges > 0.6) actionProbability += 0.01;
-      if (conditions.technologyLevel > 0.9) actionProbability += 0.01; // AI era needs
-      if (conditions.globalStability < 0.4) actionProbability += 0.02;
-      if (conditions.domesticSentiment < 0.3) actionProbability += 0.015;
+      if (conditions.unemploymentRate > 6) actionProbability += 0.1;
+      if (conditions.inflationRate > 4) actionProbability += 0.08;
+      if (conditions.environmentalChallenges > 0.6) actionProbability += 0.05;
+      if (conditions.technologyLevel > 0.9) actionProbability += 0.05; // AI era needs
+      if (conditions.globalStability < 0.4) actionProbability += 0.1;
+      if (conditions.domesticSentiment < 0.3) actionProbability += 0.08;
 
       // Senior officials more likely to act during challenging times
       if (agent.type === 'executive' || agent.type === 'legislative') {
-        actionProbability *= 2;
+        actionProbability *= 1.5;
       }
 
       if (Math.random() < actionProbability) {
@@ -610,7 +610,8 @@ FORMAT: STATEMENT: [your contribution to the discussion]`;
 
   private async considerAgentAction(agent: Agent): Promise<void> {
     if (!this.useLLM || !this.llmBrain) {
-      console.log(`Skipping agent ${agent.name} - LLM required for autonomous behavior`);
+      console.error(`⚠️ SIMULATION ISSUE: LLM not initialized - agents cannot take autonomous actions`);
+      console.error(`Please configure Gemini API key in the LLM Config panel`);
       return;
     }
 
@@ -642,15 +643,27 @@ Government Status:
 - Your relationships: ${agent.relationships.length}
 - Government budget: $${Math.round(this.state.totalBudget / 1e12)}T${goalsInfo}`;
 
+      console.log(`🤖 ${agent.name} is considering action...`);
       const llmResponse = await this.llmBrain.makeDecision(agent, situation);
       const decision = this.llmBrain.parseDecision(llmResponse);
+
+      console.log(`✅ ${agent.name}: ${decision.action}`);
 
       // Execute the agent's autonomous decision
       await this.executeAgentDecision(agent, decision);
 
     } catch (error) {
-      console.log(`Agent ${agent.name} unable to make decision:`, error);
-      // No fallback - agents must think for themselves
+      console.error(`❌ ${agent.name} LLM error:`, error);
+      // Emit error as event so it's visible in UI
+      this.emitEvent({
+        id: `error-${agent.id}-${Date.now()}`,
+        type: 'agent_action',
+        description: `${agent.name} encountered an error making a decision. Check browser console and API key.`,
+        timestamp: new Date(),
+        involvedAgents: [agent.id],
+        impact: 0,
+        public: true
+      });
     }
   }
 

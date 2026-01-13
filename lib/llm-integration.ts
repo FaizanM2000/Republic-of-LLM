@@ -93,10 +93,13 @@ FORMAT: ACTION: [what you're doing] | REASONING: [your thinking] | CREATE: [brie
 
   private async callGemini(prompt: string): Promise<string> {
     if (!this.config.apiKey) {
-      throw new Error('Gemini API key required');
+      console.error('❌ Gemini API key is not configured!');
+      console.error('Please add your API key in the LLM Config panel');
+      throw new Error('Gemini API key required - configure in UI');
     }
 
     try {
+      console.log('🔄 Calling Gemini API...');
       const ai = new GoogleGenAI({
         apiKey: this.config.apiKey,
       });
@@ -133,10 +136,30 @@ FORMAT: ACTION: [what you're doing] | REASONING: [your thinking] | CREATE: [brie
         }
       }
 
-      return fullResponse || this.fallbackDecision({}, '');
-    } catch (error) {
-      console.error('Gemini API error:', error);
-      return this.fallbackDecision({}, '');
+      if (!fullResponse) {
+        console.error('⚠️ Gemini API returned empty response');
+        throw new Error('Empty response from Gemini API');
+      }
+
+      console.log('✅ Gemini API call successful');
+      return fullResponse;
+    } catch (error: any) {
+      console.error('❌ Gemini API error:', error);
+      console.error('Error details:', {
+        message: error?.message,
+        status: error?.status,
+        statusText: error?.statusText
+      });
+
+      if (error?.message?.includes('API key')) {
+        console.error('🔑 API Key issue - please verify your Gemini API key is valid');
+      } else if (error?.status === 429) {
+        console.error('⏰ Rate limit exceeded - please wait before retrying');
+      } else if (error?.status === 403) {
+        console.error('🚫 API access forbidden - check API key permissions');
+      }
+
+      throw new Error(`Gemini API failed: ${error?.message || 'Unknown error'}`);
     }
   }
 
