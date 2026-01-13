@@ -244,6 +244,6 @@ FORMAT: ACTION: [what you're doing - can be "wait and observe" or "monitor situa
 // Default Gemini Configuration
 export const LLM_CONFIG = {
   provider: 'gemini' as const,
-  apiKey: process.env.GEMINI_API_KEY || 'AIzaSyDYrceTj8W1XqNRK0MtIiepT1aKio11s-4',
+  apiKey: process.env.GEMINI_API_KEY || '',
   model: 'gemini-2.5-flash'
 };
