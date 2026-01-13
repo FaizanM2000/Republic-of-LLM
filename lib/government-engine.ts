@@ -756,12 +756,12 @@ Government Status:
         priority: decision.goal.priority || 'medium',
         assignedAgents: [agent.id], // Creator is automatically assigned
         progress: 0,
-        status: 'proposed' as const
+        status: 'proposed' as 'proposed' | 'active' | 'completed' | 'failed'
       };
 
       // Only executives and legislative leaders can activate goals immediately
       if (agent.type === 'executive' || agent.type === 'legislative') {
-        newGoal.status = 'active' as const;
+        newGoal.status = 'active';
       }
 
       this.state.collectiveGoals.push(newGoal);
