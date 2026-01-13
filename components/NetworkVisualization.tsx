@@ -105,11 +105,11 @@ export function NetworkVisualization() {
       svg.call(zoom as any);
 
       // Set up D3 force simulation
-      simulation = d3.forceSimulation(nodes as any)
-        .force('link', d3.forceLink(edges).id((d: any) => d.id).distance(100))
+      simulation = d3.forceSimulation<NetworkNode, NetworkEdge>(nodes)
+        .force('link', d3.forceLink<NetworkNode, NetworkEdge>(edges).id((d) => d.id).distance(100))
         .force('charge', d3.forceManyBody().strength(-300))
         .force('center', d3.forceCenter(dimensions.width / 2, dimensions.height / 2))
-        .force('collision', d3.forceCollide().radius((d: any) => d.size + 10));
+        .force('collision', d3.forceCollide<NetworkNode>().radius((d) => d.size + 10));
 
       simulationRef.current = simulation;
     } else {
@@ -130,8 +130,8 @@ export function NetworkVisualization() {
       });
 
       // Update simulation with new data
-      simulation.nodes(nodes as any);
-      simulation.force('link', d3.forceLink(edges).id((d: any) => d.id).distance(100));
+      simulation.nodes(nodes);
+      simulation.force('link', d3.forceLink<NetworkNode, NetworkEdge>(edges).id((d) => d.id).distance(100));
       simulation.alpha(0.1).restart();
     }
 
