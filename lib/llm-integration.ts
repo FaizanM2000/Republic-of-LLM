@@ -242,8 +242,9 @@ FORMAT: ACTION: [what you're doing - can be "wait and observe" or "monitor situa
 }
 
 // Default Gemini Configuration
+// API key must be provided by user via LLM Config panel
 export const LLM_CONFIG = {
   provider: 'gemini' as const,
-  apiKey: process.env.GEMINI_API_KEY || '',
+  apiKey: '',
   model: 'gemini-2.5-flash'
 };
